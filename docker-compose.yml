@@ -8,6 +8,8 @@ services:
    db:
       image: kartoza/postgis:13.0
       network_mode: host
+      environment:
+         - SAMPLE_DATA=true
       volumes:
          - geo-db-data:/var/lib/postgresql
       healthcheck:
