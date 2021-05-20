@@ -1,38 +1,36 @@
 version: "3.3"
 
-volumes:
-   geo-db-data:
-   geoserver-data:
-
 services:
    db:
       image: kartoza/postgis:13.0
+      user: root
       environment:
-         POSTGRES_USER: "admin"
-         POSTGRES_PASS: "password"
-         POSTGRES_DBNAME: "sigweb"
-         POSTGRES_MULTIPLE_EXTENSIONS: "postgis,hstore,postgis_topology,postgis_raster,pgrouting"
+         - POSTGRES_USER=admin
+         - POSTGRES_PASS=password
+         - POSTGRES_DBNAME=sigweb
+         - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology,postgis_raster,pgrouting
       volumes:
-         - geo-db-data:/var/lib/postgresql
+         - ./geo-db-data:/var/lib/postgresql
       healthcheck:
          test: "exit 0"
       ports:
          - "5432:5432"
    geoserver:
       image: kartoza/geoserver:2.18.0
+      user: root
       environment:
-         GEOSERVER_ADMIN_USER: "admin"
-         GEOSERVER_ADMIN_PASSWORD: "password"
-         STABLE_EXTENSIONS: "charts-plugin,db2-plugin"
-         SAMPLE_DATA: "true"
-         DB_BACKEND: "POSTGRES"
-         HOST: "db"
-         POSTGRES_PORT: "5432"
-         POSTGRES_DB: "sigweb"
-         POSTGRES_USER: "admin"
-         POSTGRES_PASS: "password"
+         - GEOSERVER_ADMIN_USER=admin
+         - GEOSERVER_ADMIN_PASSWORD=password
+         - STABLE_EXTENSIONS=charts-plugin,db2-plugin
+         - SAMPLE_DATA=true
+         - DB_BACKEND=POSTGRES
+         - HOST=db
+         - POSTGRES_PORT=5432
+         - POSTGRES_DB=sigweb
+         - POSTGRES_USER=admin
+         - POSTGRES_PASS=password
       volumes:
-         - geoserver-data:/opt/geoserver/data_dir
+         - ./geoserver-data:/opt/geoserver/data_dir
       ports:
          - "8080:8080"
       links:
