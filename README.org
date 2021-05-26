@@ -8,3 +8,14 @@ repositório, responsáveis pela orquestração dos serviços PostGIS e GeoServe
      #+begin_src sh
      git clone https://github.com/WebSIG-Ambiental-CFMA/docker-geoserver-postgis
      #+end_src
+  2. Entramos no diretório criado pelo comando anterior.
+     #+begin_src sh
+     cd docker-geoserver-postgis
+     #+end_src
+  3. "Levantamos" nossos serviços.
+     #+begin_src sh
+     docker-compose up
+     #+end_src
+     Destacamos que esse comando é suficiente para o download,
+     configuração e inicialização de nossos serviços, de forma a
+     promover a integração entre os serviços.
