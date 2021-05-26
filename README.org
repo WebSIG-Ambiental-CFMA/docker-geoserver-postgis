@@ -108,4 +108,10 @@ repositório, responsáveis pela orquestração dos serviços PostGIS e GeoServe
      conectados. Ao lado da chave IPv4Address, vemos o IP que devemos
      utilizar para acessar nossos containers. No caso do container
      correspondente ao serviço GeoServer, devemos utilizar o IP
-     172.18.0.3.
+     172.18.0.3. Assim, como a porta padrão do GeoServer é 8080,
+     vamos para http://172.18.0.3:8080/geoserver/web/
+  4. Na interface Web do GeoServer, podemos fazer login com:
+     - Usuário: admin
+     - Senha: password
+     Estamos admitindo que esses parâmetros não foram modificadso no
+     arquivo ~docker-compose.yml~.
