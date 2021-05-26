@@ -29,3 +29,77 @@ repositório, responsáveis pela orquestração dos serviços PostGIS e GeoServe
 
   Para a inicialização de nossos serviços após a instalação, basta
   seguir os passos 2 e 3 da seção de instalação.
+
+* Acesso à Interface Web do GeoServer
+
+  1. Uma vez que os serviços já tenham sido inicializados, vamos
+     inspecionar as redes criadas pelo Docker. Para isso, primeiro
+     listamos os nomes das redes.
+     #+begin_src sh
+     docker network ls
+     #+end_src
+     A saída desse comando deve ser parecida com:
+     #+begin_src sh
+     NETWORK ID     NAME                               DRIVER    SCOPE
+     bb52cc59d7c9   bridge                             bridge    local
+     d51f898d62d8   docker-geoserver-postgis_default   bridge    local
+     d854acead322   host                               host      local
+     ab4c48b540f4   none                               null      local
+     #+end_src
+  2. Notamos que uma das redes virtuais do Docker tem um nome bastante
+     parecido com o diretório em que clonamos este repositório. Vamos inspecioná-la.
+     #+begin_src sh
+     docker network inspect docker-geoserver-postgis_default
+     #+end_src
+     A saída desse comando deve ser parecida com:
+     #+begin_src sh
+     [
+         {
+             "Name": "docker-geoserver-postgis_default",
+             "Id": "d51f898d62d85baa642eb775057112b233367bfc4a1997e477ff267b32ee68bc",
+             "Created": "2021-05-18T13:57:53.933275872-03:00",
+             "Scope": "local",
+             "Driver": "bridge",
+             "EnableIPv6": false,
+             "IPAM": {
+                 "Driver": "default",
+                 "Options": null,
+                 "Config": [
+                     {
+                         "Subnet": "172.18.0.0/16",
+                         "Gateway": "172.18.0.1"
+                     }
+                 ]
+             },
+             "Internal": false,
+             "Attachable": true,
+             "Ingress": false,
+             "ConfigFrom": {
+                 "Network": ""
+             },
+             "ConfigOnly": false,
+             "Containers": {
+                 "1215b1d1e0e83eefd5b2aa0c3074ffeef1b770b2397f90b1acc9f9e0ba7fa88d": {
+                     "Name": "docker-geoserver-postgis_geoserver_1",
+                     "EndpointID": "758cf667da7fff2a0cea08fa02cef49f157ca1c514abe23915d810e039bdff68",
+                     "MacAddress": "02:42:ac:12:00:03",
+                     "IPv4Address": "172.18.0.3/16",
+                     "IPv6Address": ""
+                 },
+                 "f192f94b0363f392ba7f9f33727eca42aa0baea85cac55049fd3907ae7f8e774": {
+                     "Name": "docker-geoserver-postgis_db_1",
+                     "EndpointID": "5f7a1fef6e22301e14fa462f1eac0927acf5ab6acd1c85a8301f8a267575dc3f",
+                     "MacAddress": "02:42:ac:12:00:02",
+                     "IPv4Address": "172.18.0.2/16",
+                     "IPv6Address": ""
+                 }
+             },
+             "Options": {},
+             "Labels": {
+                 "com.docker.compose.network": "default",
+                 "com.docker.compose.project": "docker-geoserver-postgis",
+                 "com.docker.compose.version": "1.25.0"
+             }
+         }
+     ]
+     #+end_src
