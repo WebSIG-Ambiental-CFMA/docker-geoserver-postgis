@@ -103,3 +103,9 @@ repositório, responsáveis pela orquestração dos serviços PostGIS e GeoServe
          }
      ]
      #+end_src
+  3. Logo após a chave Containers, vemos listadas as relaçẽos de
+     nossos dois containers com a rede virtual na qual estão
+     conectados. Ao lado da chave IPv4Address, vemos o IP que devemos
+     utilizar para acessar nossos containers. No caso do container
+     correspondente ao serviço GeoServer, devemos utilizar o IP
+     172.18.0.2.
