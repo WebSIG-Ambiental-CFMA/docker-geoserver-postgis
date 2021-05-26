@@ -19,3 +19,8 @@ repositório, responsáveis pela orquestração dos serviços PostGIS e GeoServe
      Destacamos que esse comando é suficiente para o download,
      configuração e inicialização de nossos serviços, de forma a
      promover a integração entre os serviços.
+
+     Notamos também que alguns diretórios serão criados. Tais
+     diretórios são chamados *volumes*, e representam o conteúdo de
+     certos diretórios dos containers em nosso sistema de arquivos
+     local.
