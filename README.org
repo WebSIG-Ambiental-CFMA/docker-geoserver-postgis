@@ -115,3 +115,21 @@ repositório, responsáveis pela orquestração dos serviços PostGIS e GeoServe
      - Senha: password
      Estamos admitindo que esses parâmetros não foram modificadso no
      arquivo ~docker-compose.yml~.
+
+* Remoção dos containers e seus volumes
+
+  Nesta seção, lidamos com os passos necessários para remover os
+  containers de nossos serviços e apagar seus dados, que residem em
+  seus volumes. Esse procedimento é desejável caso tenhamos a intenção
+  de "resetar" nossos serviços.
+
+  1. Listamos os containers que estão sendo gereniados pelo Docker.
+     #+begin_src sh
+     docker container ls -a
+     #+end_src
+     A saída desse comando deve ser parecida com:
+     #+begin_src sh
+     CONTAINER ID   IMAGE                      COMMAND                  CREATED      STATUS                       PORTS     NAMES
+     1215b1d1e0e8   kartoza/geoserver:2.18.0   "/bin/sh /scripts/en…"   4 days ago   Exited (143) 4 minutes ago             docker-geoserver-postgis_geoserver_1
+     f192f94b0363   kartoza/postgis:13.0       "/bin/sh -c /scripts…"   5 days ago   Exited (137) 3 minutes ago             docker-geoserver-postgis_db_1
+     #+end_src
