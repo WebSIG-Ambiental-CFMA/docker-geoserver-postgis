@@ -28,4 +28,4 @@ repositório, responsáveis pela orquestração dos serviços PostGIS e GeoServe
 * Execuções Posteriores
 
   Para a inicialização de nossos serviços após a instalação, basta
-  seguir os passos [[cd]] e [[up]] da seção de instalação.
+  seguir os passos 2 e 3 da seção de instalação.
