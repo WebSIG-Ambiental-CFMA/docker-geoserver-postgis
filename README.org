@@ -24,3 +24,8 @@ repositório, responsáveis pela orquestração dos serviços PostGIS e GeoServe
      diretórios são chamados *volumes*, e representam o conteúdo de
      certos diretórios dos containers em nosso sistema de arquivos
      local.
+
+* Execuções Posteriores
+
+  Para a inicialização de nossos serviços após a instalação, basta
+  seguir os passos [[cd]] e [[up]] da seção de instalação.
