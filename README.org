@@ -133,3 +133,19 @@ repositório, responsáveis pela orquestração dos serviços PostGIS e GeoServe
      1215b1d1e0e8   kartoza/geoserver:2.18.0   "/bin/sh /scripts/en…"   4 days ago   Exited (143) 4 minutes ago             docker-geoserver-postgis_geoserver_1
      f192f94b0363   kartoza/postgis:13.0       "/bin/sh -c /scripts…"   5 days ago   Exited (137) 3 minutes ago             docker-geoserver-postgis_db_1
      #+end_src
+  2. Para remover nossos containers, devemos referenciá-los pelo seu
+     ID. Dessa forma, como queremos remover dois containers, fazemos:
+     #+begin_src sh
+     docker container rm 1215b1d1e0e8
+     docker container rm f192f94b0363
+     #+end_src
+  3. Em seguida, removemos seus volumes. Para isso, precisamos apenas
+     remover os diretórios correspondentes. Dentro do diretório em que
+     cloanmos este repositório, fazemos:
+     #+begin_src sh
+     sudo rm -rf geo-db-data
+     sudo rm -rf geoserver-data
+     #+end_src
+
+  Observamos que algumas operações descritas nesta seção podem ser
+  realizadas com o comando ~docker-compose~.
