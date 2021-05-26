@@ -1,0 +1,10 @@
+Este documento descreve a utilização dos arquivos contidos neste
+repositório, responsáveis pela orquestração dos serviços PostGIS e GeoServer.
+
+* Instalação
+
+  1. Clonamos este repositório, isto é, fazemos uma cópia local dele
+     em nosso computador.
+     #+begin_src sh
+     git clone https://github.com/WebSIG-Ambiental-CFMA/docker-geoserver-postgis
+     #+end_src
