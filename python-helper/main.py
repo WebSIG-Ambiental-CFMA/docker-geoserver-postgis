@@ -4,9 +4,6 @@ import json
 import requests
 from requests.auth import HTTPBasicAuth
 
-# geoserver_rest_url = "http://172.18.0.3:8080/geoserver/rest/"
-# geoserver_auth = HTTPBasicAuth("admin","password")
-
 class geoserver_connection:
     def __init__(self, host, port, username, password):
         self.host = host
