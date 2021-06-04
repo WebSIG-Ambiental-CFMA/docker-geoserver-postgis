@@ -13,7 +13,7 @@
      uma conexão com o GeoServer. Tal objeto é requerido como
      argumento pelas funções descritas a seguir.
 ** Classe postgis_database_info
-   - parâmetros do construtor:
+   - Parâmetros do construtor:
      - ~name~: string contendo o nome da database;
      - ~host~: string contendo IP ou alias para o host do PostGIS;
      - ~port~: string contendo número da porta em que o PostGIS aceita conexões;
