@@ -137,3 +137,19 @@ def create_database_store_into_workspace_if_not_found(conn: geoserver_connection
                                                        db_info=db_info)
 
     return status_code == 201
+
+def publish_table_from_workspace_database_store(conn: geoserver_connection,
+                                                workspace_name: str,
+                                                db_info: postgis_database_info,
+                                                table_name: str) -> bool:
+    xml_payload = create_xml_tag("featureType",
+                                 create_xml_tag("name", table_name))
+
+    response = requests.post(conn.get_url() +
+                             "workspaces/" + workspace_name +
+                             "/datastores/" + db_info.get_name() + "/featuretypes",
+                             xml_payload,
+                             headers = {"Content-type": "text/xml"},
+                             auth = conn.get_auth())
+
+    return response.status_code == 201
