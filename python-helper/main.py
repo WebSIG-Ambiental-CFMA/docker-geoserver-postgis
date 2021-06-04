@@ -126,7 +126,7 @@ def create_database_store_into_workspace(conn: geoserver_connection,
 
 def create_database_store_into_workspace_if_not_found(conn: geoserver_connection,
                                                       workspace_name: str,
-                                                      db_info: postgis_database_info):
+                                                      db_info: postgis_database_info) -> bool:
     if workspace_name not in get_all_workspace_names(conn):
         return False
     if db_info.get_name() in get_all_data_store_names_from_workspace(conn, workspace_name):
