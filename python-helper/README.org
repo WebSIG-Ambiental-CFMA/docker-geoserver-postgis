@@ -49,3 +49,15 @@
      representar ~db_info~.
    - Retorno: valor booleano indicando se a database store foi criada.
 ** Função publish_table_from_workspace_database_store
+   - Parâmetros:
+     - ~conn~: um objeto da classe geoserver_connection;
+     - ~workspace_name~: string contendo o nome da workspace que
+       contém a database store que contém a tabela;
+     - ~db_info~: um objeto da classe postgis_database_info.
+     - ~table_name~: string contendo o nome da tabela, contida na
+       database representada por ~db_info~, a ser publicada.
+   - Comportamento: a existência da workspace ~workspace_name~ e da
+     database store representada por ~db_info~ não é verificada. A
+     requisição REST para a publicação da tabela ~table_name~ na
+     workspace ~workspace_name~ é realizada.
+   - Retorno: valor booleano indicando se a tabela foi publicada.
