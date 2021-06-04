@@ -8,7 +8,7 @@
        estabelecer uma conexão com o GeoServer;
      - ~password~: string contendo a senha do usuario no servidor
        GeoServer.
-   - Os métodos dessa classe não precisams ser utilizados pelo usuário.
+   - Os métodos dessa classe não precisam ser utilizados pelo usuário.
    - O usuário deve instanciar um objeto dessa classe para representar
      uma conexão com o GeoServer. Tal objeto é requerido como
      argumento pelas funções descritas a seguir.
