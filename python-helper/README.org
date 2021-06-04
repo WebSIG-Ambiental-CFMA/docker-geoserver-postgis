@@ -42,10 +42,10 @@
      - ~db_info~: um objeto da classe postgis_database_info.
    - Comportamento: verifica se há uma workspace ~workspace_name~ no
      servidor representado por ~conn~. Em caso negativo, não faz
-     nada. Em caso afirmativo, verifica se há uma database_store na
+     nada. Em caso afirmativo, verifica se há uma database store na
      workspace ~workspace_name~ com o mesmo nome da representada por
      ~db_info~. Em caso afirmativo, não faz nada. Em caso negativo,
-     cria uma database_store na workspace ~workspace_name~ para
+     cria uma database store na workspace ~workspace_name~ para
      representar ~db_info~.
-   - Retorno: valor booleano indicando se a db_store foi criada.
+   - Retorno: valor booleano indicando se a database store foi criada.
 ** Função publish_table_from_workspace_database_store
