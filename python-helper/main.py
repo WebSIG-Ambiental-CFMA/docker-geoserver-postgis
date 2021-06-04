@@ -1,14 +1,28 @@
+from typing import List
 import json
 
 import requests
 from requests.auth import HTTPBasicAuth
 
-geoserver_rest_url = "http://172.18.0.3:8080/geoserver/rest/"
-geoserver_auth = HTTPBasicAuth("admin","password")
+# geoserver_rest_url = "http://172.18.0.3:8080/geoserver/rest/"
+# geoserver_auth = HTTPBasicAuth("admin","password")
 
-def get_all_workspace_names():
-    response = requests.get(geoserver_rest_url + "workspaces",
-                            auth = geoserver_auth)
+class geoserver_connection:
+    def __init__(self, host, port, username, password):
+        self.host = host
+        self.port = port
+        self.url = "http://" + host + ":" + port + "/geoserver/rest/"
+        self.auth = HTTPBasicAuth(username, password)
+
+    def get_url(self) -> str:
+        return self.url
+
+    def get_auth(self) -> HTTPBasicAuth:
+        return self.auth
+
+def get_all_workspace_names(conn: geoserver_connection) -> List[str]:
+    response = requests.get(conn.get_url() + "workspaces",
+                            auth = conn.get_auth())
 
     response_json_dict = json.loads(response.content)
 
@@ -16,57 +30,80 @@ def get_all_workspace_names():
 
     return [ws['name'] for ws in workspace_data_list]
 
-def create_xml_tag(name, content):
+def create_xml_tag(name: str, content: str) -> str:
     opening_tag = "<"  + name + ">"
     closing_tag = "</" + name + ">"
 
     return opening_tag + content + closing_tag
 
-def create_workspace(workspace_name):
+def create_workspace(conn: geoserver_connection, workspace_name: str) -> int:
     xml_payload = create_xml_tag("workspace",
                                  create_xml_tag("name", workspace_name))
 
-    response = requests.post(geoserver_rest_url + "workspaces", xml_payload,
+    response = requests.post(conn.get_url() + "workspaces", xml_payload,
                              headers = {"Content-type": "text/xml"},
-                             auth = geoserver_auth)
+                             auth = conn.get_auth())
 
     return response.status_code
 
-def create_workspace_if_not_found(workspace_name):
-    if workspace_name not in get_all_workspace_names():
-        status_code = create_workspace(workspace_name)
+def create_workspace_if_not_found(conn: geoserver_connection, workspace_name: str) -> bool:
+    if workspace_name not in get_all_workspace_names(conn):
+        status_code = create_workspace(conn, workspace_name)
 
         return status_code == 201
     return False
 
-def create_database_xml_payload(name, host, port, user, password):
-    name_tag     = create_xml_tag("name", name)
-    host_tag     = create_xml_tag("host", host)
-    port_tag     = create_xml_tag("port", port)
-    database_tag = create_xml_tag("database", name)
-    user_tag     = create_xml_tag("user", user)
-    passwd_tag   = create_xml_tag("passwd", password)
-    dbtype_tag   = create_xml_tag("dbtype", "postgis")
+class postgis_database_info:
+    def __init__(self, name: str, host: str, port: str, user: str, password: str):
+        self.name     = name
+        self.host     = host
+        self.port     = port
+        self.user     = user
+        self.password = password
 
-    connection_parameters_tag = create_xml_tag("connectionParameters",
-                                               host_tag +
-                                               port_tag +
-                                               database_tag +
-                                               user_tag +
-                                               passwd_tag +
-                                               dbtype_tag)
+    def get_name(self):
+        return self.name
 
-    data_store_tag = create_xml_tag("dataStore",
-                                    name_tag + connection_parameters_tag)
+    def get_host(self):
+        return self.host
 
-    return data_store_tag
+    def get_port(self):
+        return self.port
 
-def get_all_data_store_names_from_workspace(workspace_name):
-    if workspace_name not in get_all_workspace_names():
+    def get_user(self):
+        return self.user
+
+    def get_password(self):
+        return self.password
+
+    def get_xml_payload(self) -> str:
+        name_tag     = create_xml_tag("name", self.name)
+        host_tag     = create_xml_tag("host", self.host)
+        port_tag     = create_xml_tag("port", self.port)
+        database_tag = create_xml_tag("database", self.name)
+        user_tag     = create_xml_tag("user", self.user)
+        passwd_tag   = create_xml_tag("passwd", self.password)
+        dbtype_tag   = create_xml_tag("dbtype", "postgis")
+
+        connection_parameters_tag = create_xml_tag("connectionParameters",
+                                                   host_tag +
+                                                   port_tag +
+                                                   database_tag +
+                                                   user_tag +
+                                                   passwd_tag +
+                                                   dbtype_tag)
+
+        data_store_tag = create_xml_tag("dataStore",
+                                        name_tag + connection_parameters_tag)
+
+        return data_store_tag
+
+def get_all_data_store_names_from_workspace(conn: geoserver_connection, workspace_name: str) -> List[str]:
+    if workspace_name not in get_all_workspace_names(conn):
         return []
 
-    response = requests.get(geoserver_rest_url + "workspaces/" + workspace_name + "/datastores",
-                            auth = geoserver_auth)
+    response = requests.get(conn.get_url() + "workspaces/" + workspace_name + "/datastores",
+                            auth = conn.get_auth())
 
     response_json_dict = json.loads(response.content)
     data_store_data_dict = response_json_dict['dataStores']
@@ -78,41 +115,28 @@ def get_all_data_store_names_from_workspace(workspace_name):
     else:
         return []
 
+def create_database_store_into_workspace(conn: geoserver_connection,
+                                         workspace_name: str,
+                                         db_info: postgis_database_info) -> int:
+    xml_payload = db_info.get_xml_payload()
 
-def create_database_store_into_workspace(workspace_name,
-                                         db_name,
-                                         db_host,
-                                         db_port,
-                                         db_user,
-                                         db_password):
-    xml_payload = create_database_xml_payload(name=db_name,
-                                              host=db_host,
-                                              port=db_port,
-                                              user=db_user,
-                                              password=db_password)
-
-    response = requests.post(geoserver_rest_url + "workspaces/" + workspace_name + "/datastores",
+    response = requests.post(conn.get_url() + "workspaces/" + workspace_name + "/datastores",
                              xml_payload,
                              headers = {"Content-type": "text/xml"},
-                             auth = geoserver_auth)
+                             auth = conn.get_auth())
 
     return response.status_code
 
-def create_database_store_into_workspace_if_not_found(workspace_name,
-                                                      db_name,
-                                                      db_host,
-                                                      db_port,
-                                                      db_user,
-                                                      db_password):
-    if workspace_name not in get_all_workspace_names():
+def create_database_store_into_workspace_if_not_found(conn: geoserver_connection,
+                                                      workspace_name: str,
+                                                      db_info: postgis_database_info):
+    if workspace_name not in get_all_workspace_names(conn):
         return False
-    if db_name in get_all_data_store_names_from_workspace(workspace_name):
+    if db_info.get_name() in get_all_data_store_names_from_workspace(conn, workspace_name):
         return False
-    status_code = create_database_store_into_workspace(workspace_name=workspace_name,
-                                                       db_name=db_name,
-                                                       db_host=db_host,
-                                                       db_port=db_port,
-                                                       db_user=db_user,
-                                                       db_password=db_password)
+
+    status_code = create_database_store_into_workspace(conn=conn,
+                                                       workspace_name=workspace_name,
+                                                       db_info=db_info)
 
     return status_code == 201
