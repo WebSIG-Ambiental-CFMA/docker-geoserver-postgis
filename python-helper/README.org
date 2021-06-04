@@ -26,5 +26,26 @@
      servidor GeoServer. Tal objeto é requerido como argumento por
      algumas funções descritas a seguir.
 ** Função create_workspace_if_not_found
+   - Parâmetros:
+     - ~conn~: um objeto da classe geoserver_connection;
+     - ~workspace_name~: string contendo o nome da workspace a ser
+       criada no servidor GeoServer.
+   - Comportamento: verifica se uma workspace chamada ~workspace_name~
+     existe no servidor representado por ~conn~: caso exista, não faz
+     nada; caso não exista, cria uma workspace chamada ~workspace_name~.
+   - Retorno: valor booleano indicando se a workspace foi criada.
 ** Função create_database_store_into_workspace_if_not_found
+   - Parâmetros:
+     - ~conn~: um objeto da classe geoserver_connection;
+     - ~workspace_name~: string contendo o nome da workspace em que a
+       database store será registrada;
+     - ~db_info~: um objeto da classe postgis_database_info.
+   - Comportamento: verifica se há uma workspace ~workspace_name~ no
+     servidor representado por ~conn~. Em caso negativo, não faz
+     nada. Em caso afirmativo, verifica se há uma database_store na
+     workspace ~workspace_name~ com o mesmo nome da representada por
+     ~db_info~. Em caso afirmativo, não faz nada. Em caso negativo,
+     cria uma database_store na workspace ~workspace_name~ para
+     representar ~db_info~.
+   - Retorno: valor booleano indicando se a db_store foi criada.
 ** Função publish_table_from_workspace_database_store
