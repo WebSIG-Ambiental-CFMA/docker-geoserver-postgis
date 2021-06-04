@@ -1,7 +1,7 @@
 * geoserver_utils.py
 ** Classe geoserver_connection
    - Parâmetros do construtor:
-     - ~host~: string contendo IP ou alias para o host;
+     - ~host~: string contendo IP ou alias para o host do GeoServer;
      - ~port~: string contendo número da porta em que o GeoServer
        aceita conexões;
      - ~username~: string contendo o nome do usuario que pode
