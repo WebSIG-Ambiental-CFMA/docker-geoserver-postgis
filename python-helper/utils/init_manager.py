@@ -28,3 +28,15 @@ class init_manager:
         self.geo_conn.publish_table_from_workspace_database_store(self.workspace_name,
                                                                   self.pgs_conn,
                                                                   full_table_name)
+
+    def register_tables(self, sql_scripts: List[str]):
+        for sql_script in sql_scripts:
+            self.register_table(sql_script)
+
+    def register_tables_from_scripts_dir(self):
+        from os import listdir
+        from os.path import isfile, join
+
+        sql_scripts = [f for f in listdir(self.scripts_dir) if isfile(join(self.scripts_dir, f))]
+
+        self.register_tables(sql_scripts)
