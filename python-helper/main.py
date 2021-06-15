@@ -1,8 +1,8 @@
 import os
 
-from .utils.postgis import postgis_connection
-from .utils.geoserver import geoserver_connection
-from .utils.init_manager import init_manager
+from utils.postgis import postgis_connection
+from utils.geoserver import geoserver_connection
+from utils.init_manager import init_manager
 
 postgres_user       = os.environ.get('POSTGRES_USER', 'admin')
 postgres_password   = os.environ.get('POSTGRES_PASS', 'password')
