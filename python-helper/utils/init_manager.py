@@ -3,7 +3,7 @@ from .geoserver import geoserver_connection
 from .postgis import postgis_connection
 
 class init_manager:
-    def __self__(self,
+    def __init__(self,
                  geo_conn: geoserver_connection,
                  pgs_conn: postgis_connection,
                  workspace_name: str,
