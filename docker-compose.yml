@@ -3,7 +3,6 @@ version: "3.3"
 services:
    db:
       image: kartoza/postgis:13.0
-      user: root
       environment:
          - POSTGRES_USER=${POSTGRES_USER}
          - POSTGRES_PASS=${POSTGRES_PASS}
