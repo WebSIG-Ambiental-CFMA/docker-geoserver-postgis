@@ -36,3 +36,23 @@ services:
          - "db:${POSTGRES_HOST}"
       depends_on:
          - db
+   initializer:
+      build: ./python-initializer
+      environment:
+         - POSTGRES_USER=${POSTGRES_USER}
+         - POSTGRES_PASS=${POSTGRES_PASS}
+         - POSTGRES_PORT=${POSTGRES_PORT}
+         - POSTGRES_HOST=${POSTGRES_HOST}
+         - POSTGRES_DBNAME=${POSTGRES_DBNAME}
+         - GEOSERVER_ADMIN_USER=${GEOSERVER_ADMIN_USER}
+         - GEOSERVER_ADMIN_PASSWORD=${GEOSERVER_ADMIN_PASSWORD}
+         - GEOSERVER_PORT=${GEOSERVER_PORT}
+         - GEOSERVER_HOST=${GEOSERVER_HOST}
+         - GEOSERVER_WORKSPACE=${GEOSERVER_WORKSPACE}
+         - SQL_SCRIPTS=${SQL_SCRIPTS}
+      links:
+         - "db:${POSTGRES_HOST}"
+         - "geoserver:${GEOSERVER_HOST}"
+      depends_on:
+        - db
+        - geoserver
