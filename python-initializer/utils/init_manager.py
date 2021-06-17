@@ -22,12 +22,12 @@ class init_manager:
 
         base_table_name, _ = os.path.splitext(sql_script)
 
-        full_table_name = self.scripts_dir + "/" + base_table_name
+        full_filename = self.scripts_dir + "/" + sql_script
 
-        self.pgs_conn.execute_sql_script(sql_script)
+        self.pgs_conn.execute_sql_script(full_filename)
         self.geo_conn.publish_table_from_workspace_database_store(self.workspace_name,
                                                                   self.pgs_conn,
-                                                                  full_table_name)
+                                                                  base_table_name)
 
     def register_tables(self, sql_scripts: List[str]):
         for sql_script in sql_scripts:
@@ -37,6 +37,8 @@ class init_manager:
         from os import listdir
         from os.path import isfile, join
 
-        sql_scripts = [f for f in listdir(self.scripts_dir) if isfile(join(self.scripts_dir, f))]
+        scripts_dir_filenames = [f for f in listdir(self.scripts_dir) if isfile(join(self.scripts_dir, f))]
+
+        sql_scripts = filter(lambda f: f.endswith(".sql"), scripts_dir_filenames)
 
         self.register_tables(sql_scripts)

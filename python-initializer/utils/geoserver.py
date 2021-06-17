@@ -1,5 +1,6 @@
 from typing import List
 import json
+import time
 
 import requests
 from requests.auth import HTTPBasicAuth
@@ -14,6 +15,16 @@ class geoserver_connection:
         self.url = "http://" + host + ":" + port + "/geoserver/rest/"
         self.auth = HTTPBasicAuth(username, password)
 
+        self.wait_for_geoserver()
+
+    def wait_for_geoserver(self, time_interval = 10):
+        while True:
+            response = requests.get(self.url + "workspaces",
+                                    auth = self.auth)
+            if response.status_code == 200:
+                break
+            else:
+                time.sleep(time_interval)
 
     def get_all_workspace_names(self) -> List[str]:
         response = requests.get(self.url + "workspaces",
@@ -27,6 +38,8 @@ class geoserver_connection:
 
 
     def create_workspace(self, workspace_name: str) -> int:
+        print("Creating workspace %s" % workspace_name)
+
         xml_payload = create_xml_tag("workspace",
                                      create_xml_tag("name", workspace_name))
 
@@ -40,8 +53,18 @@ class geoserver_connection:
         if workspace_name not in self.get_all_workspace_names():
             status_code = self.create_workspace(workspace_name)
 
-            return status_code == 201
-        return False
+            if status_code == 201:
+                print("Successfully created workspace %s" % workspace_name)
+
+                return True
+            else:
+                print("Something went wrong when creating workspace %s" % workspace_name)
+
+                return False
+        else:
+            print("Workspace %s already exists" % workspace_name)
+
+            return False
 
 
     def get_all_data_store_names_from_workspace(self, workspace_name: str) -> List[str]:
@@ -65,6 +88,8 @@ class geoserver_connection:
     def create_database_store_into_workspace(self,
                                              workspace_name: str,
                                              db_conn: postgis_connection) -> int:
+        print("Creating database store %s inside workspace %s" % (db_conn.get_database(), workspace_name))
+
         xml_payload = db_conn.get_xml_payload()
 
         response = requests.post(self.url +
@@ -79,19 +104,32 @@ class geoserver_connection:
                                                           workspace_name: str,
                                                           db_conn: postgis_connection) -> bool:
         if workspace_name not in self.get_all_workspace_names():
+            print("Workspace %s does not exist" % workspace_name)
+            
             return False
         if db_conn.get_database() in self.get_all_data_store_names_from_workspace(workspace_name):
+            print("Database %s already registered in workspace %s" % (db_conn.get_database(), workspace_name))
+            
             return False
 
         status_code = self.create_database_store_into_workspace(workspace_name=workspace_name,
                                                                 db_conn=db_conn)
 
-        return status_code == 201
+        if status_code == 201:
+            print("Successfully registered database %s into workspace %s" % (db_conn.get_database(), workspace_name))
+
+            return True
+        else:
+            print("Something went wrong when registering database %s into workspace %s" % (db_conn.get_database(), workspace_name))
+
+            return False
 
     def publish_table_from_workspace_database_store(self,
                                                     workspace_name: str,
                                                     db_conn: postgis_connection,
                                                     table_name: str) -> bool:
+        print("Publishing table %s from database %s into workspace %s" % (table_name, db_conn.get_database(), workspace_name))
+
         xml_payload = create_xml_tag("featureType",
                                      create_xml_tag("name", table_name))
 
@@ -102,4 +140,12 @@ class geoserver_connection:
                                  headers = {"Content-type": "text/xml"},
                                  auth = self.auth)
 
-        return response.status_code == 201
+        # return response.status_code == 201
+        if response.status_code == 201:
+            print("Successfully published table %s from database %s in workspace %s" % (table_name, db_conn.get_database(), workspace_name))
+
+            return True
+        else:
+            print("Something went wrong when publishing table %s from database %s in workspace %s" % (table_name, db_conn.get_database(), workspace_name))
+
+            return False

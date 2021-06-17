@@ -32,7 +32,7 @@ gs_conn = geoserver_connection(host     = geoserver_host,
 manager = init_manager(geo_conn       = gs_conn,
                        pgs_conn       = pg_conn,
                        workspace_name = geoserver_workspace,
-                       scripts_dir    = 'sql_scripts')
+                       scripts_dir    = scripts_dir)
 
 manager.initialize()
 manager.register_tables_from_scripts_dir()

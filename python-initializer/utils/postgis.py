@@ -1,3 +1,5 @@
+import time
+
 import psycopg2
 
 from .xml import create_xml_tag
@@ -10,11 +12,30 @@ class postgis_connection:
         self.user     = user
         self.password = password
 
+        self.wait_for_database()
+
         self.conn = psycopg2.connect(host=self.host,
                                      port=self.port,
                                      database=self.database,
                                      user=self.user,
                                      password=self.password)
+
+    def wait_for_database(self, time_interval = 10):
+        while True:
+            try:
+                temp_conn = psycopg2.connect(host=self.host,
+                                             port=self.port,
+                                             database=self.database,
+                                             user=self.user,
+                                             password=self.password)
+                temp_conn.close()
+                break
+            except:
+                print("Waiting [%s %s %s %s] to be ready" % (self.host,
+                                                             self.port,
+                                                             self.database,
+                                                             self.user))
+                time.sleep(time_interval)
 
     def get_database(self):
         return self.database
@@ -59,7 +80,9 @@ class postgis_connection:
         try:
             cursor.execute(sql_statement)
         except:
+            print("Something went wrong when executing SQL statement:\n %s" % sql_statement)
             self.conn.rollback()
+            print("Peformed rollback in database")
 
             return []
 
@@ -74,6 +97,8 @@ class postgis_connection:
         return result
 
     def execute_sql_script(self, sql_filename: str):
+        print("Executing SQL script %s" % sql_filename)
+
         file = open(sql_filename, "r")
 
         file_content = file.read()

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS Persons (
+CREATE TABLE IF NOT EXISTS persons (
     PersonID int,
     LastName varchar(255),
     FirstName varchar(255),
