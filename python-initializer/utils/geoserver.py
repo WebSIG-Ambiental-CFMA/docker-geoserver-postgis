@@ -164,8 +164,29 @@ class geoserver_connection:
                                  headers = {"Content-type": "text/xml"},
                                  auth = self.auth)
 
-        # return response.status_code == 201
-        if response.status_code == 201:
+        return response.status_code
+
+
+    def publish_table_from_workspace_database_store_if_not_found(self,
+                                                                 workspace_name: str,
+                                                                 db_conn: postgis_connection,
+                                                                 table_name: str) -> bool:
+        if workspace_name not in self.get_all_workspace_names():
+            print("Workspace %s does not exist" % workspace_name)
+
+            return False
+        if db_conn.get_database() not in self.get_all_data_store_names_from_workspace(workspace_name):
+            print("Database %s does not exist in workspace %s" % (db_conn.get_database(), workspace_name))
+
+            return False
+        if table_name in self.get_table_names_from_database_store_in_workspace(workspace_name, db_conn):
+            print("Table %s already published in workspace %s from database %s" % (table_name, workspace_name, db_conn.get_database()))
+
+            return False
+
+        status_code = self.publish_table_from_workspace_database_store(workspace_name, db_conn, table_name)
+
+        if status_code == 201:
             print("Successfully published table %s from database %s in workspace %s" % (table_name, db_conn.get_database(), workspace_name))
 
             return True
