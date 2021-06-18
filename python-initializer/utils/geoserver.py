@@ -66,7 +66,6 @@ class geoserver_connection:
 
             return False
 
-
     def get_all_data_store_names_from_workspace(self, workspace_name: str) -> List[str]:
         if workspace_name not in self.get_all_workspace_names():
             return []
