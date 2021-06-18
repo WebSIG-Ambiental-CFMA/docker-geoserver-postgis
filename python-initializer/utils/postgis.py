@@ -93,6 +93,8 @@ class postgis_connection:
         except:
             result = []
 
+        self.conn.commit()
+
         cursor.close()
 
         return result
