@@ -24,6 +24,7 @@ class geoserver_connection:
             if response.status_code == 200:
                 break
             else:
+                print("Waiting for GeoServer [%s %s] to be ready" % (self.host, self.port))
                 time.sleep(time_interval)
 
     def get_all_workspace_names(self) -> List[str]:

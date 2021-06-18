@@ -79,6 +79,7 @@ class postgis_connection:
 
         try:
             cursor.execute(sql_statement)
+            print("Successfully executed SQL script:\n%s" % sql_statement)
         except:
             print("Something went wrong when executing SQL statement:\n %s" % sql_statement)
             self.conn.rollback()
