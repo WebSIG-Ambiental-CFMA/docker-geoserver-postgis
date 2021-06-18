@@ -25,9 +25,9 @@ class init_manager:
         full_filename = self.scripts_dir + "/" + sql_script
 
         self.pgs_conn.execute_sql_script(full_filename)
-        self.geo_conn.publish_table_from_workspace_database_store(self.workspace_name,
-                                                                  self.pgs_conn,
-                                                                  base_table_name)
+        self.geo_conn.publish_table_from_workspace_database_store_if_not_found(self.workspace_name,
+                                                                               self.pgs_conn,
+                                                                               base_table_name)
 
     def register_tables(self, sql_scripts: List[str]):
         for sql_script in sql_scripts:
