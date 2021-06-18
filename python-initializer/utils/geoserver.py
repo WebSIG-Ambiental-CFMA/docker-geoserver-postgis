@@ -124,6 +124,30 @@ class geoserver_connection:
 
             return False
 
+    def get_table_names_from_database_store_in_workspace(self,
+                                                         workspace_name: str,
+                                                         db_conn: postgis_connection) -> List[str]:
+        if workspace_name not in self.get_all_workspace_names():
+            return []
+        if db_conn.get_database() not in self.get_all_data_store_names_from_workspace(workspace_name):
+            return []
+
+        response = requests.get(self.url +
+                                "workspaces/" + workspace_name +
+                                "/datastores/" + db_conn.get_database() + "/featuretypes.json",
+                                auth = self.auth)
+
+        response_json_dict = json.loads(response.content)
+        featuretypes_data_dict = response_json_dict["featureTypes"]
+
+        if type(featuretypes_data_dict) is dict:
+            featuretypes_data_list = featuretypes_data_dict["featureType"]
+
+            return [ft["name"] for ft in featuretypes_data_list]
+        else:
+            return []
+
+
     def publish_table_from_workspace_database_store(self,
                                                     workspace_name: str,
                                                     db_conn: postgis_connection,
