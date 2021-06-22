@@ -1,0 +1,96 @@
+* xml.py
+** Função create_xml_tag:
+   - argumentos:
+     - ~name~: nome da tag xml a ser criada;
+     - ~content~: conteúdo a ser envolto pela tag xml a ser criada.
+   - retorno: string contendo uma tag xml com nome ~name~ e conteúdo ~content~.
+* geoserver.py
+** Classe geoserver_connection
+   - Parâmetros do construtor:
+     - ~host~: string contendo IP ou alias para o host do GeoServer;
+     - ~port~: string contendo número da porta em que o GeoServer
+       aceita conexões;
+     - ~username~: string contendo o nome do usuario que pode
+       estabelecer uma conexão com o GeoServer;
+     - ~password~: string contendo a senha do usuario no servidor
+       GeoServer.
+   - Alguns métodos dessa classe não precisam ser utilizados pelo
+     usuário.
+   - Métodos:
+     - create_workspace_if_not_found
+       - Parâmetros:
+         - ~workspace_name~: string contendo o nome da workspace a ser
+           criada no servidor GeoServer.
+       - Comportamento: verifica se uma workspace chamada ~workspace_name~
+         existe no servidor representado por ~self~: caso exista, não faz
+         nada; caso não exista, cria uma workspace chamada ~workspace_name~.
+       - Retorno: valor booleano indicando se a workspace foi criada.
+     - create_database_store_into_workspace_if_not_found
+       - Parâmetros:
+         - ~workspace_name~: string contendo o nome da workspace em que a
+           database store será registrada;
+         - ~db_conn~: um objeto da classe postgis_connection.
+       - Comportamento: verifica se há uma workspace ~workspace_name~ no
+         servidor representado por ~self~. Em caso negativo, não faz
+         nada. Em caso afirmativo, verifica se há uma database store na
+         workspace ~workspace_name~ com o mesmo nome da representada por
+         ~db_conn~. Em caso afirmativo, não faz nada. Em caso negativo,
+         cria uma database store na workspace ~workspace_name~ para
+         representar ~db_conn~.
+       - Retorno: valor booleano indicando se a database store foi criada.
+     - publish_table_from_workspace_database_store_if_not_found
+        - Parâmetros:
+          - ~workspace_name~: string contendo o nome da workspace que
+            contém a database store que contém a tabela;
+          - ~db_conn~: um objeto da classe postgis_connection.
+          - ~table_name~: string contendo o nome da tabela, contida na
+            database representada por ~db_conn~, a ser publicada.
+        - Comportamento: a existência da workspace ~workspace_name~ e da
+          database store representada por ~db_conn~ é verificada. A
+          requisição REST para a publicação da tabela ~table_name~ na
+          workspace ~workspace_name~ é realizada caso tanto a
+          workspace ~workspace_name~ e a database store representando
+          ~db_conn~ existam.
+        - Retorno: valor booleano indicando se a tabela foi publicada.
+* postgis.py
+** Classe postgis_connection
+   - Parâmetros do construtor:
+     - ~host~: string contendo IP ou alias para o host do PostGIS;
+     - ~port~: string contendo número da porta em que o PostGIS aceita conexões;
+     - ~database~: string contendo o nome da database;
+     - ~user~: string contendo o nome do usuário que pode acessar a
+       database no PostGIS;
+     - ~password~: string contendo a senha do usuário no servidor PostGIS.
+   - Alguns métodos dessa classe não precisams ser utilizados pelo usuário.
+   - Métodos:
+     - execute_sql_script:
+       - Parâmetros:
+         - ~sql_filename~: nome do arquivo contendo o script sql a ser
+           executado.
+       - Comportamento: lê o conteúdo do arquivo ~sql_filename~ e o
+         executa como um script sql no servidor PostGIS representado
+         pro ~self~.
+       - Retorno: resultado do script sql que foi executado, ou uma
+         lista vazia caso o script não tenha produzido resultados.
+* init_manager.py
+** Classe init_manager
+   - Parâmetros do construtor:
+     - ~geo_conn~: objeto representando uma conexão com um servidor GeoServer;
+     - ~pgs_conn~: objeto representando uma conexão com um servidor PostGIS;
+     - ~workspace_name~: nome da workspace a ser criada e utilizada no
+       servidor GeoServer;
+     - ~scripts_dir~: diretório que contém os scripts sql a serem executados.
+   - Alguns métodos dessa classe não precisams ser utilizados pelo usuário.
+   - Métodos:
+     - initialize:
+       - Parâmetros: nenhum;
+       - Comportamento: registra a workspace ~workspace_name~ e a
+         database store correspondente a ~pgs_conn~, caso não tenham
+         sido criadas.
+       - Retorno: nenhum
+     - register_tables_from_scripts_dir:
+       - Parâmetros: nenhum
+       - Comportamento: toma os nomes dos arquivos com extensão ~.sql~
+         contidos no diretório ~scripts_dir~, e em seguida os executa um
+         por vez.
+       - Retorno: nenhum.
